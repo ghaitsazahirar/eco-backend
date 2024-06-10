@@ -43,8 +43,8 @@ const Landing = () => {
 
         try {
             // Kirim email reset password
-            await firebase.auth().sendPasswordResetEmail(email);
             alert("Email untuk reset password telah dikirim. Silakan cek kotak masuk Anda.");
+            await firebase.auth().sendPasswordResetEmail(email);
         } catch (error) {
             console.error("Error during password reset:", error);
             alert("Terjadi kesalahan saat melakukan reset password.");
