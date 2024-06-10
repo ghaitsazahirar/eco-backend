@@ -33,7 +33,7 @@ const Landing = () => {
                     <i class="fa-solid fa-lock"></i>
                 </div>
             </div>
-            <p class="forget-password-i"><a href="lupapassword.html">Lupa password?</a></p>
+            <p class="forget-password-i"><a href="forgotpass.html" id="forgotpass">Lupa password?</a></p>
             <div class="btn-login">
                 <button id="login" data-button="signin">Login</button>
             </div>
@@ -80,5 +80,18 @@ const Landing = () => {
     registerBtn.onclick = (e) => {
         e.preventDefault();
         window.location.href = 'register.html';
+    };
+
+    const forgotpass = element.querySelector("#forgotpass");
+    forgotpass.onclick = (e) => {
+        e.preventDefault();
+        const email = element.querySelector("#email").value;
+        sendPasswordResetEmail(firebase.auth(), email)
+        .then(() => {
+            alert("Password reset email sent, check your inbox.");
+         })
+        .catch((error) => {
+            alert(error);
+         })
     };
 };
