@@ -2,7 +2,7 @@ const container = document.querySelector(".container");
 
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-        window.location.href = "homepage.html";
+        // window.location.href = "homepage.html";
         Dashboard();
     } else {
         Landing();
@@ -40,10 +40,18 @@ const Landing = () => {
                     <i class="fa-solid fa-unlock"></i>
                 </div>
             </div>
+            <div class="form-group">
+                <label for="password">Konfirmasi Password</label>
+                <div class="form-group-login">
+                    <input type="password" id="konfirm-password" name="password" placeholder="Masukkan Password Konfirmasi" required>
+                    <i class="fa-solid fa-unlock"></i>
+                </div>
+            </div>
         
         <div class="btn-register">
             <button data-button="register">Register</button>
             <button data-button="login">Google Login</button>
+        </div>
         </div>
     `);
 
@@ -60,6 +68,32 @@ const Landing = () => {
         firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
         .then((cred) => {
             alert(`Berhasil Membuat Akun ${cred.user.uid}`);
+
+    const nameInput = document.getElementById('name').value;
+    const emailInput = document.getElementById('email').value;
+    const passwordInput = document.getElementById('password').value;
+
+    if (!nameInput || !emailInput || !passwordInput) {
+            alert("Please fill all the fields!");
+    } else {
+        // Create the user object
+        const user = {
+            name: nameInput,
+            email: emailInput,
+            password: passwordInput
+        };
+
+        // Push to Firebase
+    firebase.database().ref('users/' + user.uid).push(user)
+        .then(() => {
+            alert("Data pushed successfully!");
+        })
+        .catch((error) => {
+            console.error("Error pushing data: ", error);
+            alert("Error pushing data: " + error.message);
+        });
+    }
+
         })
         .catch((error) => {
             alert(error);
