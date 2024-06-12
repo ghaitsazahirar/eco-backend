@@ -38,7 +38,7 @@ class EcoHeader extends HTMLElement {
             </div>
             <div class="logo-navbar">
                 <i class="fa-solid fa-comments"></i>
-                <a href="#">FAQ</a>
+                <a href="faq.html">FAQ</a>
             </div>
         </nav>
     </header>`;

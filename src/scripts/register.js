@@ -2,8 +2,7 @@ const container = document.querySelector(".container");
 
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-        // window.location.href = "homepage.html";
-        Dashboard();
+        window.location.href = "homepage.html";
     } else {
         Landing();
     }
@@ -110,20 +109,4 @@ const Landing = () => {
         firebase.auth().signInWithRedirect(provider);
     }
     }
-}
-
-const Dashboard = (user) => {
-    const element = document.createElement("div");
-    element.classList.add("Dashboard");
-    element.innerHTML = (`
-        <button data-button="logout">Logout</button>
-    `);
-
-    container.innerHTML = "";
-    container.appendChild(element);
-
-    const logout = element.querySelector(`[data-button="logout"]`);
-    logout.onclick = () => firebase.auth().signOut().then(() => {
-        alert("Berhasil Logout");
-    }).catch((err) => alert(err));
 }

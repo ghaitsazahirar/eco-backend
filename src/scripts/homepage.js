@@ -1,28 +1,28 @@
-// src/index.js
-import "../styles/style.css";
-import "../scripts/components/footer";
-import "../scripts/components/header";
-import { toggleMenu, closeMenu, navigateToChallenge, viewProfile, navigateToDetail } from "./function-nav";
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Fetch data tantangan dari file JSON
-    fetch('/data/challenges.json')
+    fetch('../public/data/challenges.json')
         .then(response => response.json())
         .then(data => {
-            // Ambil tantangan acak dari masing-masing jenis
             const dailyChallenge = getRandomChallenge(data.daily);
             const baseChallenge = getRandomChallenge(data.base);
             const weeklyChallenge = getRandomChallenge(data.weekly);
 
-            // Tampilkan rekomendasi tantangan
             if (dailyChallenge) displayChallenge(dailyChallenge, 'daily');
             if (baseChallenge) displayChallenge(baseChallenge, 'base');
             if (weeklyChallenge) displayChallenge(weeklyChallenge, 'weekly');
         })
         .catch(error => console.error('Error loading challenges:', error));
+
+    // Check if user is logged in and update profile
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            // Jika pengguna sudah login, panggil viewProfile untuk menampilkan profil
+            viewProfile();
+        } else {
+            console.log("Tidak ada pengguna yang login.");
+        }
+    });
 });
 
-// Fungsi untuk mendapatkan tantangan acak dari array tantangan
 function getRandomChallenge(challenges) {
     if (!challenges || challenges.length === 0) return null;
     const randomIndex = Math.floor(Math.random() * challenges.length);
@@ -31,7 +31,6 @@ function getRandomChallenge(challenges) {
 
 function displayChallenge(challenge, type) {
     const recommendationContainer = document.getElementById('challenge-recommendations');
-
     if (!recommendationContainer) {
         console.error('Element with ID "challenge-recommendations" not found.');
         return;
@@ -53,34 +52,53 @@ function displayChallenge(challenge, type) {
         </div>
     `;
 
-    // Tambahkan elemen tantangan ke dalam kontainer rekomendasi
     recommendationContainer.appendChild(challengeDiv);
 }
 
+function viewProfile() {
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            const userId = user.uid;
+            const userRef = firebase.database().ref('users/' + userId);
 
-// Dummy user data (Replace this with your actual user data)
-const userData = {
-    name: "John Doe",
-    points: 1000
-};
+            userRef.once('value').then(snapshot => {
+                const userData = snapshot.val();
+                if (userData) {
+                    document.getElementById("username").textContent = userData.name || "User";
+                    document.getElementById("userPoints").textContent = userData.points || 0;
+                    
+                    const profileElement = document.createElement('div');
+                    profileElement.classList.add('profile-details');
+                    profileElement.innerHTML = `
+                        <p>Name: ${userData.name}</p>
+                        <p>Email: ${user.email}</p>
+                        <button onclick="logout()">Logout</button>
+                    `;
 
-// Function to update user profile
-function updateUserProfile() {
-    const usernameElement = document.getElementById("username");
-    const pointsElement = document.getElementById("userPoints");
-
-    // Update profile with user data
-    usernameElement.textContent = userData.name;
-    pointsElement.textContent = userData.points;
+                    document.getElementById("profile").appendChild(profileElement);
+                }
+            }).catch(error => {
+                console.error("Error retrieving user data: ", error);
+            });
+        } else {
+            console.log("No user is signed in.");
+        }
+    });
 }
 
+function logout() {
+    firebase.auth().signOut().then(() => {
+        alert("Berhasil Logout");
+        window.location.href = "index.html";
+    }).catch(error => {
+        console.error("Error signing out: ", error);
+    });
+}
 
-// Call the function to initially load user profile
-updateUserProfile();
-
-// Set functions to the global window object
+// Make functions available globally
 window.toggleMenu = toggleMenu;
 window.closeMenu = closeMenu;
 window.navigateToChallenge = navigateToChallenge;
 window.viewProfile = viewProfile;
 window.navigateToDetail = navigateToDetail;
+window.logout = logout;

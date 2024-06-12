@@ -3,17 +3,17 @@ const container = document.querySelector(".container");
 const comments = [
     {
         name: "Zee JKT 48",
-        profilePic: "/src/public/assets/img/profil-1.jpg",
+        profilePic: "../public/assets/img/profil-1.jpg",
         comment: "This is a great website!"
     },
     {
         name: "Unknown",
-        profilePic: "/src/public/assets/img/profil-1.jpg",
+        profilePic: "../public/public/assets/img/profil-1.jpg",
         comment: "I found this website very useful."
     },
     {
         name: "Bapakmu",
-        profilePic: "/src/public/assets/img/profil-1.jpg",
+        profilePic: "../public/public/assets/img/profil-1.jpg",
         comment: "Amazing experience, highly recommend!"
     }
 ];
